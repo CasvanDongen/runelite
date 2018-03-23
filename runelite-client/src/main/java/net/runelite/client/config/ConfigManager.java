@@ -38,6 +38,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -448,6 +449,10 @@ public class ConfigManager
 		if (type.isEnum())
 		{
 			return Enum.valueOf((Class<? extends Enum>) type, str);
+		}
+		if (type == List.class)
+		{
+			return str.length() > 0 ? Arrays.asList(str.substring(1, str.length() - 1).split("\\s*, \\s*")) : new ArrayList<>();
 		}
 
 		return str;

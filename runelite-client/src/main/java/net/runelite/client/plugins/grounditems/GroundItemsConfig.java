@@ -25,11 +25,12 @@
 
 package net.runelite.client.plugins.grounditems;
 
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
-
-import java.awt.Color;
 
 @ConfigGroup(
 	keyName = "grounditems",
@@ -126,15 +127,26 @@ public interface GroundItemsConfig extends Config
 		return 0;
 	}
 
+//	@ConfigItem(
+	//		keyName = "highlightedItems",
+	//		name = "Highlighted Items",
+	//		description = "Configures specifically highlighted ground items. Format: (item), (item)",
+	//		position = 9
+	//	)
+	//	default String getHighlightItems()
+	//	{
+	//		return "";
+	//	}
+
 	@ConfigItem(
 		keyName = "highlightedItems",
 		name = "Highlighted Items",
 		description = "Configures specifically highlighted ground items. Format: (item), (item)",
 		position = 9
 	)
-	default String getHighlightItems()
+	default List<String> getHighlightItems()
 	{
-		return "";
+		return new ArrayList<String>();
 	}
 
 	@ConfigItem(

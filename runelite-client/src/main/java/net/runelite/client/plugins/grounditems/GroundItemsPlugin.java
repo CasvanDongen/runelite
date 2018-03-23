@@ -154,7 +154,7 @@ public class GroundItemsPlugin extends Plugin
 		hiddenItemList = COMMA_SPLITTER.splitToList(config.getHiddenItems().trim());
 
 		// gets the highlighted items from the text box in the config
-		highlightedItemsList = COMMA_SPLITTER.splitToList(config.getHighlightItems().trim());
+		highlightedItemsList = config.getHighlightItems();
 
 		highlightedItems = CacheBuilder.newBuilder()
 			.maximumSize(512L)

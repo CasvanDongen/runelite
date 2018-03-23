@@ -514,7 +514,7 @@ public class ConfigPanel extends PluginPanel
 						// Create Item list panel
 						final JFrame parent = new JFrame(cid.getItem().name());
 						String configuration = configManager.getConfiguration(cd.getGroup().keyName(), cid.getItem().keyName());
-						String label[] = configuration.substring(1, configuration.length() - 1).split("\\s*, \\s*");
+						String label[] = configuration.length() > 0 ? configuration.substring(1, configuration.length() - 1).split("\\s*, \\s*") : new String[]{""};
 
 						// Item container
 						Container container = new Container();
@@ -588,6 +588,8 @@ public class ConfigPanel extends PluginPanel
 						parent.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 						parent.setLocationRelativeTo(null);
 						parent.setVisible(true);
+
+						button.addActionListener(click -> parent.dispose());
 					}
 				});
 				item.add(openListButton, BorderLayout.EAST);
