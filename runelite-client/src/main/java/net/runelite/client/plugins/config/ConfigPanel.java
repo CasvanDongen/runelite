@@ -45,6 +45,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ScheduledExecutorService;
 import javax.imageio.ImageIO;
+import javax.swing.DefaultListModel;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -71,6 +72,8 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigDescriptor;
@@ -501,48 +504,86 @@ public class ConfigPanel extends PluginPanel
 
 			if (cid.getType() == List.class)
 			{
-				JButton openListButton = new JButton("Show Items");
+				JButton openListButton = new JButton("Choose");
 				openListButton.setFocusable(false);
 				openListButton.addMouseListener(new MouseAdapter()
 				{
-					String label[] = {"Ashes", "Prayer potion (1)", "Prayer potion (2)", "Prayer potion (3)", "Prayer potion (4)", "Other item"};
-
-					JList list;
-
-					Container SimpleList2()
+					@Override
+					public void mouseClicked(MouseEvent e)
 					{
+						// Create Item list panel
+						final JFrame parent = new JFrame(cid.getItem().name());
+						String configuration = configManager.getConfiguration(cd.getGroup().keyName(), cid.getItem().keyName());
+						String label[] = configuration.substring(1, configuration.length() - 1).split("\\s*, \\s*");
+
+						// Item container
 						Container container = new Container();
 						container.setLayout(new BorderLayout());
 
+						// Button container
 						Container buttonContainer = new Container();
 						buttonContainer.setLayout(new BorderLayout());
 
-						list = new JList(label);
-						JButton button = new JButton("Save");
-						JButton button2 = new JButton("Add");
-						JScrollPane pane = new JScrollPane(list);
+						// Create list, buttons and pane
+						DefaultListModel<String> model = new DefaultListModel<>();
+						JList<String> list = new JList<>(model);
+						for (String single : label)
+						{
+							model.addElement(single);
+						}
 
+						JScrollPane pane = new JScrollPane(list);
+						pane.setPreferredSize(new Dimension(300, 300));
+						JButton button = new JButton("Save & Close");
+						button.setPreferredSize(new Dimension(300, 40));
+						JTextField textField = new JTextField("");
+
+						// List functionalities
 						DefaultListSelectionModel m = new DefaultListSelectionModel();
 						m.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 						m.setLeadAnchorNotificationEnabled(false);
 						list.setSelectionModel(m);
 
-						list.addListSelectionListener(e -> System.out.println(e.toString()));
+						// Enter to add to list
+						textField.addActionListener(ConfigListHelper.addTextfieldToModel(textField, model));
+
+						// Right click to remove
+						list.addMouseListener(ConfigListHelper.rightClickToRemoveAdapter(list, model));
+
+						model.addListDataListener(new ListDataListener()
+						{
+							private void saveConfig()
+							{
+								configManager.setConfiguration(cd.getGroup().keyName(), cid.getItem().keyName(), model.toString());
+							}
+
+							@Override
+							public void intervalAdded(ListDataEvent e)
+							{
+								saveConfig();
+							}
+
+							@Override
+							public void intervalRemoved(ListDataEvent e)
+							{
+								saveConfig();
+							}
+
+							@Override
+							public void contentsChanged(ListDataEvent e)
+							{
+								saveConfig();
+							}
+						});
+
+						// Add elements to container, pane and parent
 						container.add(pane, BorderLayout.NORTH);
-						buttonContainer.add(button, BorderLayout.EAST);
-						buttonContainer.add(button2, BorderLayout.WEST);
+						buttonContainer.add(textField, BorderLayout.NORTH);
+						buttonContainer.add(button, BorderLayout.SOUTH);
 						container.add(buttonContainer, BorderLayout.SOUTH);
+						parent.setContentPane(container);
 
-
-						return container;
-					}
-
-
-					@Override
-					public void mouseClicked(MouseEvent e)
-					{
-						final JFrame parent = new JFrame("Item list");
-						parent.setContentPane(SimpleList2());
+						// Pack and create parent
 						parent.pack();
 						parent.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 						parent.setLocationRelativeTo(null);
