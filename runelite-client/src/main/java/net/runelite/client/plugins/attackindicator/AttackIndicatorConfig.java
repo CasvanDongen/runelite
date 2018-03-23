@@ -24,6 +24,8 @@
  */
 package net.runelite.client.plugins.attackindicator;
 
+import java.util.ArrayList;
+import java.util.List;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
@@ -99,5 +101,16 @@ public interface AttackIndicatorConfig extends Config
 	default boolean removeWarnedStyles()
 	{
 		return false;
+	}
+
+	@ConfigItem(
+		keyName = "list",
+		name = "New List",
+		description = "Example of a new List configuration object",
+		position = 8
+	)
+	default List<String> test()
+	{
+		return new ArrayList<>();
 	}
 }

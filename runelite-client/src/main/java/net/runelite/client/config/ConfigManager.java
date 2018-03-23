@@ -448,6 +448,7 @@ public class ConfigManager
 		{
 			return Enum.valueOf((Class<? extends Enum>) type, str);
 		}
+		{
 		return str;
 	}
 

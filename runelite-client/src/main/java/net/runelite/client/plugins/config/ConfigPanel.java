@@ -39,10 +39,12 @@ import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ScheduledExecutorService;
 import javax.imageio.ImageIO;
+import javax.swing.DefaultListSelectionModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -52,6 +54,7 @@ import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import static javax.swing.JOptionPane.WARNING_MESSAGE;
 import static javax.swing.JOptionPane.YES_NO_OPTION;
@@ -60,12 +63,15 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigDescriptor;
@@ -492,6 +498,59 @@ public class ConfigPanel extends PluginPanel
 				dimensionPanel.add(heightSpinner, BorderLayout.EAST);
 
 				item.add(dimensionPanel, BorderLayout.EAST);
+			}
+
+			if (cid.getType() == List.class)
+			{
+				JButton openListButton = new JButton("Show Items");
+				openListButton.setFocusable(false);
+				openListButton.addMouseListener(new MouseAdapter()
+				{
+					String label[] = { "Ashes", "Prayer potion (1)", "Prayer potion (2)", "Prayer potion (3)", "Prayer potion (4)", "Other item"};
+
+					JList list;
+
+					Container SimpleList2()
+					{
+						Container container = new Container();
+						container.setLayout(new BorderLayout());
+
+						Container buttonContainer = new Container();
+						buttonContainer.setLayout(new BorderLayout());
+
+						list = new JList(label);
+						JButton button = new JButton("Save");
+						JButton button2 = new JButton("Add");
+						JScrollPane pane = new JScrollPane(list);
+
+						DefaultListSelectionModel m = new DefaultListSelectionModel();
+						m.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+						m.setLeadAnchorNotificationEnabled(false);
+						list.setSelectionModel(m);
+
+						list.addListSelectionListener(e -> System.out.println(e.toString()));
+						container.add(pane, BorderLayout.NORTH);
+						buttonContainer.add(button, BorderLayout.EAST);
+						buttonContainer.add(button2, BorderLayout.WEST);
+						container.add(buttonContainer, BorderLayout.SOUTH);
+
+
+						return container;
+					}
+
+
+					@Override
+					public void mouseClicked(MouseEvent e)
+					{
+						final JFrame parent = new JFrame("Item list");
+						parent.setContentPane(SimpleList2());
+						parent.pack();
+						parent.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+						parent.setLocationRelativeTo(null);
+						parent.setVisible(true);
+					}
+				});
+				item.add(openListButton, BorderLayout.EAST);
 			}
 
 			if (cid.getType().isEnum())
