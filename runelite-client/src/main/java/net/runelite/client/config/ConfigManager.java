@@ -234,9 +234,9 @@ public class ConfigManager
 		}
 
 		T t = (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class<?>[]
-		{
-			clazz
-		}, handler);
+			{
+				clazz
+			}, handler);
 
 		return t;
 	}
@@ -368,6 +368,7 @@ public class ConfigManager
 
 	/**
 	 * Initialize the configuration from the default settings
+	 *
 	 * @param proxy
 	 */
 	public void setDefaultConfiguration(Object proxy, boolean override)
@@ -448,7 +449,7 @@ public class ConfigManager
 		{
 			return Enum.valueOf((Class<? extends Enum>) type, str);
 		}
-		{
+
 		return str;
 	}
 

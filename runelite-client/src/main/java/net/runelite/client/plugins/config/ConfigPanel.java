@@ -27,6 +27,7 @@ package net.runelite.client.plugins.config;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.FocusEvent;
@@ -70,8 +71,6 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigDescriptor;
@@ -158,28 +157,28 @@ public class ConfigPanel extends PluginPanel
 		Map<String, JPanel> newChildren = new TreeMap<>();
 
 		pluginManager.getPlugins().stream()
-				.filter(plugin -> !plugin.getClass().getAnnotation(PluginDescriptor.class).hidden())
-				.sorted(Comparator.comparing(left -> left.getClass().getAnnotation(PluginDescriptor.class).name()))
-				.forEach(plugin ->
-				{
-					final Config pluginConfigProxy = pluginManager.getPluginConfigProxy(plugin);
-					final String pluginName = plugin.getClass().getAnnotation(PluginDescriptor.class).name();
+			.filter(plugin -> !plugin.getClass().getAnnotation(PluginDescriptor.class).hidden())
+			.sorted(Comparator.comparing(left -> left.getClass().getAnnotation(PluginDescriptor.class).name()))
+			.forEach(plugin ->
+			{
+				final Config pluginConfigProxy = pluginManager.getPluginConfigProxy(plugin);
+				final String pluginName = plugin.getClass().getAnnotation(PluginDescriptor.class).name();
 
-					final JPanel groupPanel = buildGroupPanel();
-					groupPanel.add(new JLabel(pluginName), BorderLayout.CENTER);
+				final JPanel groupPanel = buildGroupPanel();
+				groupPanel.add(new JLabel(pluginName), BorderLayout.CENTER);
 
-					final JPanel buttonPanel = new JPanel();
-					buttonPanel.setLayout(new GridLayout(1, 2, 3, 0));
-					groupPanel.add(buttonPanel, BorderLayout.LINE_END);
+				final JPanel buttonPanel = new JPanel();
+				buttonPanel.setLayout(new GridLayout(1, 2, 3, 0));
+				groupPanel.add(buttonPanel, BorderLayout.LINE_END);
 
-					final JButton editConfigButton = buildConfigButton(pluginConfigProxy);
-					buttonPanel.add(editConfigButton);
+				final JButton editConfigButton = buildConfigButton(pluginConfigProxy);
+				buttonPanel.add(editConfigButton);
 
-					final JButton toggleButton = buildToggleButton(plugin);
-					buttonPanel.add(toggleButton);
+				final JButton toggleButton = buildToggleButton(plugin);
+				buttonPanel.add(toggleButton);
 
-					newChildren.put(pluginName, groupPanel);
-				});
+				newChildren.put(pluginName, groupPanel);
+			});
 
 
 		final JPanel groupPanel = buildGroupPanel();
@@ -488,7 +487,7 @@ public class ConfigPanel extends PluginPanel
 				heightSpinnerTextField.setColumns(4);
 
 				ChangeListener listener = e ->
-						configManager.setConfiguration(cd.getGroup().keyName(), cid.getItem().keyName(), widthSpinner.getValue() + "x" + heightSpinner.getValue());
+					configManager.setConfiguration(cd.getGroup().keyName(), cid.getItem().keyName(), widthSpinner.getValue() + "x" + heightSpinner.getValue());
 
 				widthSpinner.addChangeListener(listener);
 				heightSpinner.addChangeListener(listener);
@@ -506,7 +505,7 @@ public class ConfigPanel extends PluginPanel
 				openListButton.setFocusable(false);
 				openListButton.addMouseListener(new MouseAdapter()
 				{
-					String label[] = { "Ashes", "Prayer potion (1)", "Prayer potion (2)", "Prayer potion (3)", "Prayer potion (4)", "Other item"};
+					String label[] = {"Ashes", "Prayer potion (1)", "Prayer potion (2)", "Prayer potion (3)", "Prayer potion (4)", "Other item"};
 
 					JList list;
 
