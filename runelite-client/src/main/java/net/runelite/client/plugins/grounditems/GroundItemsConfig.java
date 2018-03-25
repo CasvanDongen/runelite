@@ -146,7 +146,7 @@ public interface GroundItemsConfig extends Config
 	)
 	default List<String> getHighlightItems()
 	{
-		return new ArrayList<String>();
+		return new ArrayList<>();
 	}
 
 	@ConfigItem(
